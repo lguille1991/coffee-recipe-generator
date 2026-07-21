@@ -18,6 +18,14 @@ FILLED_RECIPE = re.search(r"```\n(.*?)\n```", TEMPLATE_TEXT, re.DOTALL).group(1)
 
 
 class RecipeTurnDetectionTests(unittest.TestCase):
+    def test_package_name_does_not_trigger_recipe_validation(self):
+        self.assertFalse(
+            is_recipe_turn(
+                "I published coffee-recipe-generator as an npm package, but it is not updated.",
+                "The package is still at version 1.0.0.",
+            )
+        )
+
     def test_skill_edit_request_is_not_a_recipe_output_turn(self):
         user_text = (
             "I get inconsistent results when generating a coffee recipe using my skill "

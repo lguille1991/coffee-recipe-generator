@@ -20,6 +20,8 @@ The skill is storage-optional. It can read and write profiles or recipes if a ho
 - `coffee-recipe-generator/templates/`: Markdown scaffolds for profiles and recipes
 - `coffee-recipe-generator/references/`: brewing defaults, grinder ranges, origin guidance, troubleshooting, equipment notes, and research sources
 - `coffee-recipe-generator/scripts/`: reusable validation scripts for skill outputs
+- `bin/coffee-recipe-generator.js`: npm installation and status CLI
+- `package.json`: npm package metadata, contents, and release checks
 - `scripts/install-skill.sh`: symlink installer for OpenCode and Claude skill locations
 - `scripts/update-skill.sh`: update helper that pulls the latest repo and reports install status
 - `.codex/hooks.json`: Codex hook wiring for repository-local validation
@@ -27,7 +29,35 @@ The skill is storage-optional. It can read and write profiles or recipes if a ho
 
 ## Installation
 
-Clone the repository, then run the installer from the repository root:
+Install the published package with npm:
+
+```bash
+npx coffee-recipe-generator install
+```
+
+By default, the npm installer copies the skill into both supported locations:
+
+- OpenCode: `~/.agents/skills/coffee-recipe-generator`
+- Claude: `~/.claude/skills/coffee-recipe-generator`
+
+Select one target or a custom skills root with:
+
+```bash
+npx coffee-recipe-generator install --target opencode
+npx coffee-recipe-generator install --target claude
+npx coffee-recipe-generator install --path /path/to/skills
+```
+
+The installer will not replace an existing file, directory, or symlink unless
+you explicitly pass `--force`. Check the standard locations with:
+
+```bash
+npx coffee-recipe-generator status
+```
+
+### Installing from a Clone
+
+For development, clone the repository and run the shell installer:
 
 ```bash
 git clone https://github.com/lguille1991/coffee-recipe-generator.git
@@ -35,7 +65,7 @@ cd coffee-recipe-generator
 ./scripts/install-skill.sh
 ```
 
-By default, the installer links the skill into both supported locations:
+By default, the shell installer links the skill into both supported locations:
 
 - OpenCode: `~/.agents/skills/coffee-recipe-generator`
 - Claude: `~/.claude/skills/coffee-recipe-generator`
@@ -59,13 +89,43 @@ If a real directory or file already exists at the install path, the installer st
 
 ## Updating
 
-Run the update helper from the repository root:
+For an npm installation, install the current package and replace the copied
+skill:
+
+```bash
+npx coffee-recipe-generator@latest install --force
+```
+
+For a clone-based installation, run the update helper from the repository root:
 
 ```bash
 ./scripts/update-skill.sh
 ```
 
 The updater runs `git pull --ff-only`, then reports whether the OpenCode and Claude skill locations are correctly symlinked to this repository. Because installation uses symlinks, the active skill uses the latest pulled files immediately.
+
+## Publishing to npm
+
+The npm package version in `package.json` must match `metadata.version` in
+`coffee-recipe-generator/SKILL.md`. A release publishes the CLI, the complete
+skill directory, this README, and the license.
+
+Before publishing, run:
+
+```bash
+npm test
+npm pack --dry-run
+```
+
+After reviewing the tarball contents, authenticate and publish the new version:
+
+```bash
+npm login
+npm publish
+```
+
+npm versions are immutable. Increment both versions before publishing another
+release.
 
 ## How to Use It
 
