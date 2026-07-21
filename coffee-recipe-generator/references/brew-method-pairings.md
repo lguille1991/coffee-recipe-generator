@@ -108,6 +108,8 @@ Experimental coffees (anaerobic fermentation, carbonic maceration, malic ferment
 - At 1:20: aggressively pour 75g
 - Target total brew time: 2:30-3:00
 
+This source example does not specify flow rates. Do not copy it directly into a generated recipe: select an appropriate numeric `g/s` speed for the bloom and each main pour, then include those speeds in both the Brew Timeline and Brewing Steps.
+
 **Two-kettle method (Sam Corra / ONA Coffee):**
 - Use two kettles: one at 92°C, one at 88°C
 - Start with the hotter water, finish with cooler water to protect volatile aromatics

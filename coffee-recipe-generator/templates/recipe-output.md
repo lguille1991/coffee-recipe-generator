@@ -18,8 +18,8 @@ Use this as the scaffold for every generated recipe. Fill in all placeholders wi
 - `{{YIELD}}` — Expected ml yield
 - `{{BREW_TIME}}` — Target range, e.g., 2:45-3:15
 - `{{GRIND_SETTING}}` — **Mandatory markdown table** with exact settings for all five grinders: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, and Timemore C2. Include all five rows for every generated or adapted recipe, even when the user names only one grinder or no grinder. See example below.
-- `{{TIMELINE_ROWS}}` — Pipe-delimited markdown table rows
-- `{{STEPS}}` — Numbered step blocks
+- `{{TIMELINE_ROWS}}` — Pipe-delimited markdown table rows; every bloom/pour row must have a numeric pour speed in `g/s`
+- `{{STEPS}}` — Numbered step blocks; every bloom/pour step must repeat its numeric pour speed in `g/s`
 - `{{FLAVOR_NOTES}}` — 2-3 sentence flavor description
 - `{{TROUBLESHOOTING_ROWS}}` — Pipe-delimited table rows
 
@@ -58,13 +58,13 @@ Use this as the scaffold for every generated recipe. Fill in all placeholders wi
 A fruit-forward cup with intense blueberry and stone fruit notes, tuned for clarity so the aromatics stay separated rather than heavy. The natural process enhances the coffee's wild, wine-like character. Expect a syrupy body with a clean, bright finish. Perfect for showcasing Ethiopian terroir.
 
 ## Brew Timeline
-| Time | Action | Total Water |
-|------|--------|-------------|
-| 0:00 | Bloom | 30ml |
-| 0:45 | First Main Pour | 110ml |
-| 1:15 | Second Main Pour | 185ml |
-| 1:45 | Final Pour | 255ml |
-| 2:45 | Drawdown complete | — |
+| Time | Action | Total Water | Pour Speed |
+|------|--------|-------------|------------|
+| 0:00 | Bloom | 30ml | 3-4 g/s |
+| 0:45 | First Main Pour | 110ml | 5-6 g/s |
+| 1:15 | Second Main Pour | 185ml | 5-6 g/s |
+| 1:45 | Final Pour | 255ml | 3-4 g/s |
+| 2:45 | Drawdown complete | — | — |
 
 ## Brewing Steps
 
@@ -72,25 +72,25 @@ A fruit-forward cup with intense blueberry and stone fruit notes, tuned for clar
 - **Time:** 0:00 - 0:45
 - **Water:** 30g at 92°C (double the coffee dose)
 - **Pour Pattern:** Start at center, slowly spiral outward to edges
-- **Pour Speed:** Slow (3-4 ml/s)
+- **Pour Speed:** 3-4 g/s (slow)
 
 ### Step 2: First Main Pour
 - **Time:** 0:45 - 1:15
 - **Water:** Add 80g (total 110g)
 - **Pour Pattern:** Start center, pour in slow circles expanding to outer edge, maintain water level at 1/3 bed height
-- **Pour Speed:** Medium (5-6 ml/s)
+- **Pour Speed:** 5-6 g/s (medium)
 
 ### Step 3: Second Main Pour
 - **Time:** 1:15 - 1:45
 - **Water:** Add 75g (total 185g)
 - **Pour Pattern:** Slow circles from center outward, maintain level
-- **Pour Speed:** Medium (5-6 ml/s)
+- **Pour Speed:** 5-6 g/s (medium)
 
 ### Step 4: Final Pour
 - **Time:** 1:45 - 2:15
 - **Water:** Add 70g (total 255g)
 - **Pour Pattern:** Gentle spiral pour, finish 2-3cm above bed to avoid air incorporation
-- **Pour Speed:** Slow (3-4 ml/s)
+- **Pour Speed:** 3-4 g/s (slow)
 
 ### Final Drawdown
 - **Time:** Target 2:45 - 3:15 total
@@ -129,3 +129,4 @@ A fruit-forward cup with intense blueberry and stone fruit notes, tuned for clar
 7. **Troubleshooting:** Include the full table in every recipe.
 8. **Grinder callout:** **MANDATORY.** Always include a markdown table with exact settings for all five grinders in `references/grinder-settings.md`: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, and Timemore C2. Reference `references/grinder-settings.md` for base ranges, then apply the five-determinant adjustments. Never use generic descriptions alone.
 9. **Preflight check:** Before finalizing a recipe, confirm the grinder table has exactly five rows and none of the five grinder names are missing. If a method is unsupported by a grinder, keep the row and write `Not supported` plus the closest practical alternative when available.
+10. **Pour speed:** Every bloom and pour must include a numeric speed as a single value or range in grams per second (`g/s`) in both its Brew Timeline row and Brewing Step. A qualitative label may follow the numeric rate, but cannot replace it. Use `—` only for non-pouring actions such as drawdown.
