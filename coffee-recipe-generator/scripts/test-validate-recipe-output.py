@@ -2,6 +2,7 @@
 """Focused regression tests for recipe-output validation routing."""
 
 import runpy
+import re
 import unittest
 from pathlib import Path
 
@@ -10,6 +11,10 @@ VALIDATOR = runpy.run_path(
     str(Path(__file__).with_name("validate-recipe-output.py"))
 )
 is_recipe_turn = VALIDATOR["is_recipe_turn"]
+template_errors = VALIDATOR["template_errors"]
+
+TEMPLATE_TEXT = Path(__file__).parents[1].joinpath("templates/recipe-output.md").read_text()
+FILLED_RECIPE = re.search(r"```\n(.*?)\n```", TEMPLATE_TEXT, re.DOTALL).group(1)
 
 
 class RecipeTurnDetectionTests(unittest.TestCase):
@@ -33,11 +38,38 @@ class RecipeTurnDetectionTests(unittest.TestCase):
 
         self.assertFalse(is_recipe_turn(user_text, assistant_text))
 
+    def test_skill_issue_report_is_not_a_recipe_output_turn(self):
+        user_text = (
+            "I've noticed my skill tries to generate a recipe even when I'm just asking "
+            "questions like what's the best brewer for these coffee beans?"
+        )
+
+        self.assertFalse(is_recipe_turn(user_text, "The routing issue is confirmed."))
+
+    def test_brewer_recommendation_questions_are_not_recipe_turns(self):
+        questions = [
+            "What is the best brewer for these coffee beans?",
+            "Which is better for this washed Ethiopian coffee, V60 or Kalita?",
+            "What brewing method best suits this natural Colombian coffee?",
+        ]
+
+        for question in questions:
+            with self.subTest(question=question):
+                self.assertFalse(is_recipe_turn(question, "A concise recommendation."))
+
     def test_genuine_recipe_request_still_requires_recipe_output(self):
         self.assertTrue(
             is_recipe_turn(
                 "Generate a V60 coffee recipe for this washed Ethiopian coffee.",
                 "Here is a quick starting point.",
+            )
+        )
+
+    def test_explicit_dial_in_request_requires_recipe_output(self):
+        self.assertTrue(
+            is_recipe_turn(
+                "Dial in this honey-process Pacamara for my Kalita Wave.",
+                "Here is a starting point.",
             )
         )
 
@@ -53,6 +85,26 @@ class RecipeTurnDetectionTests(unittest.TestCase):
 
         self.assertTrue(
             is_recipe_turn("Update the recipe template in SKILL.md.", assistant_text)
+        )
+
+
+class RecipeTemplateValidationTests(unittest.TestCase):
+    def test_reference_time_is_accepted_as_timeline_time_column(self):
+        recipe = FILLED_RECIPE.replace("| Time | Action |", "| Reference Time | Action |")
+
+        self.assertNotIn(
+            "Brew Timeline must include a markdown table with a Time column.",
+            template_errors(recipe),
+        )
+
+    def test_equivalent_troubleshooting_header_is_accepted(self):
+        recipe = FILLED_RECIPE.replace(
+            "If your coffee tastes...", "If the coffee tastes..."
+        )
+
+        self.assertNotIn(
+            "Troubleshooting Guide must include the standard troubleshooting table.",
+            template_errors(recipe),
         )
 
 

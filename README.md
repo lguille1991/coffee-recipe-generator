@@ -7,6 +7,7 @@ A portable skill package for specialty coffee workflows. The main skill, `coffee
 The skill lives in `coffee-recipe-generator/SKILL.md`. It defines four workflows:
 
 - **Bag Analysis:** extracts details from a coffee bag image and formats them with `templates/coffee-profile.md`.
+- **Quick Coffee Guidance:** answers brewer recommendations, comparisons, and general coffee questions without forcing a full recipe.
 - **Recipe Generation:** builds a brew recipe from method, dose, origin, and processing method.
 - **Recipe Adaptation:** adjusts an existing recipe for a different bean, brewer, filter, or flavor goal.
 - **Primary-Source Research:** summarizes brewing science, equipment guidance, or competition techniques with exact source URLs.
@@ -69,6 +70,8 @@ The updater runs `git pull --ff-only`, then reports whether the OpenCode and Cla
 ## How to Use It
 
 Load `coffee-recipe-generator` when the user asks for coffee bag analysis, recipe generation, recipe tuning, recipe adaptation, or brewing research.
+
+For questions such as “Which brewer suits these beans?” or “Is V60 or Kalita better for this coffee?”, answer concisely from the pairing and equipment references. Generate the full recipe only when the user explicitly asks for a recipe, dial-in, or complete brewing instructions.
 
 For recipe generation, collect these required inputs:
 

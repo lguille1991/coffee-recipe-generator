@@ -39,11 +39,24 @@ POUR_SPEED_RE = re.compile(
     re.IGNORECASE,
 )
 
-RECIPE_INTENT_RE = re.compile(
-    r"\b(recipe|brew|brewing|dial[- ]?in|grind setting|grinder setting|"
-    r"v60|chemex|kalita|aeropress|french press|origami|orea|moka|siphon|"
-    r"coffee dose|processing method|washed|natural|honey process)\b",
+EXPLICIT_RECIPE_REQUEST_RE = re.compile(
+    r"\b(?:recipe|dial[- ]?in|brew(?:ing)?\s+(?:plan|guide|instructions?)|"
+    r"step[- ]by[- ]step\s+brew)\b",
     re.IGNORECASE,
+)
+
+QUICK_GUIDANCE_RE = re.compile(
+    r"\b(?:best|better|which|recommend(?:ation|ed|ing)?|compare|comparison|"
+    r"difference|why|suits?|pairing|what\s+(?:brewer|brew(?:ing)?\s+method))\b",
+    re.IGNORECASE,
+)
+
+SKILL_ISSUE_REPORT_RE = re.compile(
+    r"(?:\b(?:issue|bug|problem|noticed?|behaviou?r|tries?|keeps?)\b.{0,160}"
+    r"\b(?:skill|template|validator|hook|workflow)\b|"
+    r"\b(?:skill|template|validator|hook|workflow)\b.{0,160}"
+    r"\b(?:issue|bug|problem|noticed?|behaviou?r|tries?|keeps?)\b)",
+    re.IGNORECASE | re.DOTALL,
 )
 
 MAINTENANCE_REQUEST_RE = re.compile(
@@ -135,9 +148,13 @@ def is_recipe_turn(user_text, assistant_text):
     )
     if recipe_shaped_output:
         return True
-    if MAINTENANCE_REQUEST_RE.search(user_text or ""):
+    if MAINTENANCE_REQUEST_RE.search(user_text or "") or SKILL_ISSUE_REPORT_RE.search(
+        user_text or ""
+    ):
         return False
-    return bool(RECIPE_INTENT_RE.search(user_text or ""))
+    if QUICK_GUIDANCE_RE.search(user_text or ""):
+        return False
+    return bool(EXPLICIT_RECIPE_REQUEST_RE.search(user_text or ""))
 
 
 def heading_index(markdown, heading):
@@ -298,11 +315,20 @@ def template_errors(markdown):
         errors.append("Required sections must appear in the recipe-output.md order.")
 
     timeline = section_body(markdown, "Brew Timeline")
-    if timeline and "| Time |" not in timeline:
-        errors.append("Brew Timeline must include a markdown table with a Time column.")
+    if timeline:
+        timeline_headers = []
+        for block in table_blocks(timeline):
+            headers = [cell.strip().lower() for cell in block[0].strip().strip("|").split("|")]
+            if "action" in headers:
+                timeline_headers = headers
+                break
+        if not any(re.search(r"\btime\b", header) for header in timeline_headers):
+            errors.append("Brew Timeline must include a markdown table with a Time column.")
 
     troubleshooting = section_body(markdown, "Troubleshooting Guide")
-    if troubleshooting and "If your coffee tastes" not in troubleshooting:
+    if troubleshooting and not re.search(
+        r"\bIf\s+(?:your|the)\s+coffee\s+tastes\b", troubleshooting, re.IGNORECASE
+    ):
         errors.append("Troubleshooting Guide must include the standard troubleshooting table.")
 
     errors.extend(grinder_table_errors(markdown))
