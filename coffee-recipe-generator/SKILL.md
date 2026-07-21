@@ -2,7 +2,7 @@
 name: coffee-recipe-generator
 description: Storage-optional, harness-agnostic specialty coffee workflow for bag analysis, recipe generation, recipe adaptation, and primary-source brewing research.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: Portable Skill Template
   tags: Coffee, Brewing, Barista, Research, Portable
   recipe_generation_parameters:
@@ -87,7 +87,7 @@ Pitfalls:
 4. Load `references/grind-determinants.md` and `references/grinder-settings.md`. Apply the five-determinant stack: method base → processing → origin/altitude → roast → variety.
 5. Always include exact settings for every grinder in `references/grinder-settings.md` in one markdown table: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, and Timemore C2. This is required even when the user mentions only one grinder, does not specify a grinder, or asks for a quick recipe.
 6. Load `references/origin-processing-guide.md` and adjust temperature for origin, process, and roast.
-7. Fill `templates/recipe-output.md`. For V60 recipes, state the selected recipe style in the Overview as either `Classic V60` or `Tetsu Kasuya 4:6 Method`.
+7. Fill `templates/recipe-output.md`. For V60 recipes, state the selected recipe style in the Overview as either `Classic V60` or `Tetsu Kasuya 4:6 Method`. For every pour, including the bloom, specify a numeric pour speed as a single value or range in grams per second (`g/s`). Include it in both the Brew Timeline row and the corresponding Brewing Step; never use only a qualitative label such as slow, medium, or fast.
 8. Mandatory output sections, in this order:
    - Coffee Details
    - Overview
@@ -97,9 +97,10 @@ Pitfalls:
    - Troubleshooting Guide
    - Adjusting for Your Taste
 9. Before returning the recipe, verify the Overview contains a grinder table with exactly these five rows: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, Timemore C2.
-10. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
-11. Offer pairing context when useful by consulting `references/brew-method-pairings.md` or `references/equipment-profiles.md`.
-12. For V60 with 4:6 recipe style, build the Brew Timeline and Brewing Steps from `references/four-six-method.md`:
+10. Verify every bloom and pour has a numeric `g/s` pour speed in both the Brew Timeline and Brewing Steps. Non-pouring actions such as drawdown may use `—` in the timeline's Pour Speed column.
+11. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
+12. Offer pairing context when useful by consulting `references/brew-method-pairings.md` or `references/equipment-profiles.md`.
+13. For V60 with 4:6 recipe style, build the Brew Timeline and Brewing Steps from `references/four-six-method.md`:
     - Scale water proportionally from the user's coffee dose using a 1:15 ratio unless the user requested a different strength.
     - Split total water into first 40% and final 60%.
     - Use the user's flavor intent to tune the first two pours: sweetness = smaller first pour/larger second pour, clarity = larger first pour/smaller second pour, balanced/body/forgiveness = equal first and second pours unless the bean profile strongly suggests otherwise.
@@ -111,6 +112,7 @@ Pitfalls:
 Pitfalls:
 - Never omit any of the five grinder rows from generated or adapted recipes.
 - Never rely on generic grind descriptions alone; generic descriptors may appear only as a secondary label after the exact grinder table.
+- Never omit the numeric `g/s` speed from a bloom or pour, and never substitute `ml/s` or a qualitative speed label without a numeric `g/s` value.
 - Never assume a default brew method, coffee dose, flavor intent, or V60 recipe style; ask the user when any are missing from the initial prompt.
 - Never generate a V60 recipe without first resolving whether it should be classic or 4:6.
 - Never fail recipe generation just because no profile store exists.
@@ -149,9 +151,10 @@ Pitfalls:
 4. Apply adaptation rules from `references/brewer-version-adaptation.md`.
 5. Rebuild the recipe using `templates/recipe-output.md` and include a clear “Changes from Base” section.
 6. Include the full five-grinder table required by Workflow B, recalculated for the adapted recipe rather than copied blindly from the base recipe.
-7. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
-8. Set expectations honestly when a bean cannot reproduce the same style as another.
-9. Save only if a destination is configured or requested; otherwise return the adapted recipe inline.
+7. Verify every bloom and pour has a numeric `g/s` pour speed in both the Brew Timeline and Brewing Steps.
+8. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
+9. Set expectations honestly when a bean cannot reproduce the same style as another.
+10. Save only if a destination is configured or requested; otherwise return the adapted recipe inline.
 
 Pitfalls:
 - Do not blindly copy numbers from one bean to another.

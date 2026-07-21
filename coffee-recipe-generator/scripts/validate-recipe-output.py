@@ -33,11 +33,27 @@ REQUIRED_FLAVOR_INTENTS = [
     "forgiveness",
 ]
 
+POUR_ACTION_RE = re.compile(r"\b(?:bloom|pour)\b", re.IGNORECASE)
+POUR_SPEED_RE = re.compile(
+    r"\b\d+(?:\.\d+)?(?:\s*[-–—]\s*\d+(?:\.\d+)?)?\s*g\s*/\s*s\b",
+    re.IGNORECASE,
+)
+
 RECIPE_INTENT_RE = re.compile(
     r"\b(recipe|brew|brewing|dial[- ]?in|grind setting|grinder setting|"
     r"v60|chemex|kalita|aeropress|french press|origami|orea|moka|siphon|"
     r"coffee dose|processing method|washed|natural|honey process)\b",
     re.IGNORECASE,
+)
+
+MAINTENANCE_REQUEST_RE = re.compile(
+    r"(?:\bSKILL\.md\b|\brecipe-output\.md\b|\bvalidate-recipe-output\.py\b|"
+    r"\bhooks?\.json\b|"
+    r"\b(?:update|edit|modify|change|fix|revise|improve|test(?:s|ed|ing)?)\b.{0,100}"
+    r"\b(?:skill|template|validator|hook|script|workflow|instructions?|references?)\b|"
+    r"\b(?:skill|template|validator|hook|script|workflow|instructions?|references?)\b"
+    r".{0,100}\b(?:update|edit|modify|change|fix|revise|improve|test(?:s|ed|ing)?)\b)",
+    re.IGNORECASE | re.DOTALL,
 )
 
 RECIPE_OUTPUT_MARKERS = [
@@ -113,12 +129,15 @@ def last_user_message(transcript_path):
 
 
 def is_recipe_turn(user_text, assistant_text):
-    if RECIPE_INTENT_RE.search(user_text or ""):
-        return True
     marker_count = sum(1 for marker in RECIPE_OUTPUT_MARKERS if marker in assistant_text)
-    return marker_count >= 2 or bool(
+    recipe_shaped_output = marker_count >= 2 or bool(
         re.search(r"^# .*\bRecipe\b", assistant_text, re.IGNORECASE | re.MULTILINE)
     )
+    if recipe_shaped_output:
+        return True
+    if MAINTENANCE_REQUEST_RE.search(user_text or ""):
+        return False
+    return bool(RECIPE_INTENT_RE.search(user_text or ""))
 
 
 def heading_index(markdown, heading):
@@ -216,6 +235,57 @@ def flavor_intent_errors(markdown):
     return []
 
 
+def pour_speed_errors(markdown):
+    errors = []
+    timeline = section_body(markdown, "Brew Timeline")
+    timeline_table = None
+    for block in table_blocks(timeline):
+        header = [cell.strip().lower() for cell in block[0].strip().strip("|").split("|")]
+        if "action" in header:
+            timeline_table = (header, block)
+            break
+
+    if timeline_table is None:
+        errors.append("Brew Timeline must contain a markdown table with an Action column.")
+    else:
+        header, block = timeline_table
+        if "pour speed" not in header:
+            errors.append("Brew Timeline must include a Pour Speed column.")
+        else:
+            action_index = header.index("action")
+            speed_index = header.index("pour speed")
+            data_rows = [row for row in block[1:] if not is_separator_row(row)]
+            for row in data_rows:
+                cells = [cell.strip() for cell in row.strip().strip("|").split("|")]
+                if len(cells) <= max(action_index, speed_index):
+                    errors.append("Every Brew Timeline row must include a Pour Speed cell.")
+                    continue
+                action = cells[action_index]
+                if POUR_ACTION_RE.search(action) and not POUR_SPEED_RE.search(cells[speed_index]):
+                    errors.append(
+                        f'Brew Timeline action "{action}" must have a numeric pour speed in g/s.'
+                    )
+
+    steps = section_body(markdown, "Brewing Steps")
+    step_blocks = re.split(r"(?=^###\s+)", steps, flags=re.MULTILINE)
+    for block in step_blocks:
+        heading = re.match(r"^###\s+(?P<heading>[^\n]+)", block)
+        if not heading or not POUR_ACTION_RE.search(heading.group("heading")):
+            continue
+        speed = re.search(
+            r"^\s*-?\s*\*\*Pour Speed:\*\*\s*(?P<speed>[^\n]+)$",
+            block,
+            re.IGNORECASE | re.MULTILINE,
+        )
+        if not speed or not POUR_SPEED_RE.search(speed.group("speed")):
+            errors.append(
+                f'Brewing step "{heading.group("heading").strip()}" must include a numeric '
+                "Pour Speed in g/s."
+            )
+
+    return errors
+
+
 def template_errors(markdown):
     errors = []
     positions = {section: heading_index(markdown, section) for section in REQUIRED_SECTIONS}
@@ -237,6 +307,7 @@ def template_errors(markdown):
 
     errors.extend(grinder_table_errors(markdown))
     errors.extend(flavor_intent_errors(markdown))
+    errors.extend(pour_speed_errors(markdown))
     return errors
 
 
@@ -272,7 +343,8 @@ def main():
         + ", ".join(REQUIRED_GRINDERS)
         + ". Include a valid Flavor Intent in the Overview: "
         + ", ".join(REQUIRED_FLAVOR_INTENTS)
-        + "."
+        + ". Include a numeric g/s pour speed for every bloom and pour in both the Brew "
+        "Timeline and Brewing Steps."
     )
     emit({"decision": "block", "reason": reason})
     return 0

@@ -10,8 +10,10 @@
 
 ## Pour Speed Reference
 
-| Speed | ml/second | When to Use |
-|-------|-----------|-------------|
-| Slow | 2-4 ml/s | Finer grinds, delicate coffees, bloom |
-| Medium | 5-8 ml/s | Standard brewing, most steps |
-| Fast | 9-12 ml/s | Coarse grinds, high agitation desired |
+| Speed | g/s | When to Use |
+|-------|-----|-------------|
+| Slow | 2-4 g/s | Finer grinds, delicate coffees, bloom |
+| Medium | 5-8 g/s | Standard brewing, most steps |
+| Fast | 9-12 g/s | Coarse grinds, high agitation desired |
+
+Always express the selected rate numerically in `g/s` for every bloom and pour. Qualitative labels are optional secondary descriptions only.

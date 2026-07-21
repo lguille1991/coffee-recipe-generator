@@ -95,9 +95,17 @@ Recipes should follow `templates/recipe-output.md` and include:
 - Troubleshooting Guide
 - Adjusting for Your Taste
 
+Every bloom and pour must state a numeric pour speed in grams per second (`g/s`) in both the Brew Timeline and its corresponding Brewing Step.
+
 Coffee profiles should follow `templates/coffee-profile.md`. If no storage destination is configured, return the finished profile or recipe inline as Markdown.
 
-When this repository's Codex hooks are trusted, the `Stop` hook runs `coffee-recipe-generator/scripts/validate-recipe-output.py` to request a correction pass if a generated recipe omits required sections or any of the five grinder rows.
+When this repository's Codex hooks are trusted, the `Stop` hook runs `coffee-recipe-generator/scripts/validate-recipe-output.py` to request a correction pass if a generated recipe omits required sections, any of the five grinder rows, or numeric `g/s` speeds for its pours. Skill, template, hook, and validator maintenance requests are excluded unless the assistant response itself contains a recipe.
+
+Run the focused hook regression tests with:
+
+```bash
+python3 coffee-recipe-generator/scripts/test-validate-recipe-output.py
+```
 
 ## Troubleshooting
 

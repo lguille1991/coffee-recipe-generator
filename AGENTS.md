@@ -21,6 +21,7 @@ No build pipeline or package manager is configured in this repository. The usefu
 - `./scripts/install-skill.sh`: install the skill as symlinks into both OpenCode and Claude locations
 - `./scripts/update-skill.sh`: pull the latest repo and report whether standard skill locations point to this clone
 - `bash -n scripts/install-skill.sh && bash -n scripts/update-skill.sh`: validate shell syntax after editing install tooling
+- `python3 coffee-recipe-generator/scripts/test-validate-recipe-output.py`: run focused regression tests for recipe-output hook routing
 
 If you add tooling later, document the exact commands here and in `README.md`.
 
@@ -30,7 +31,7 @@ Prefer concise Markdown with clear headings and short paragraphs. Match the exis
 
 ## Testing Guidelines
 
-There is no automated test suite today. Validate changes by reading the edited Markdown end to end and checking that:
+There is no broad automated test suite today. Run the focused recipe-output validator tests when changing hook behavior, then validate Markdown changes by reading the edited files end to end and checking that:
 
 - internal paths are real
 - section ordering is still logical
