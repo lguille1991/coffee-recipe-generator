@@ -40,7 +40,7 @@ POUR_SPEED_RE = re.compile(
 )
 
 EXPLICIT_RECIPE_REQUEST_RE = re.compile(
-    r"\b(?:recipe|dial[- ]?in|brew(?:ing)?\s+(?:plan|guide|instructions?)|"
+    r"\b(?:recipe(?![- ]generator\b)|dial[- ]?in|brew(?:ing)?\s+(?:plan|guide|instructions?)|"
     r"step[- ]by[- ]step\s+brew)\b",
     re.IGNORECASE,
 )

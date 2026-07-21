@@ -1,0 +1,39 @@
+{
+  "name": "coffee-recipe-generator",
+  "version": "1.2.1",
+  "description": "A portable specialty coffee recipe generation skill.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lguille1991/coffee-recipe-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lguille1991/coffee-recipe-generator/issues"
+  },
+  "homepage": "https://github.com/lguille1991/coffee-recipe-generator#readme",
+  "bin": {
+    "coffee-recipe-generator": "bin/coffee-recipe-generator.js"
+  },
+  "files": [
+    "bin/",
+    "coffee-recipe-generator/",
+    "LICENSE",
+    "README.md",
+    "scripts/test-npm-package.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node scripts/test-npm-package.js && python3 coffee-recipe-generator/scripts/test-validate-recipe-output.py",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "coffee",
+    "skill",
+    "opencode",
+    "claude",
+    "brewing",
+    "barista"
+  ]
+}
