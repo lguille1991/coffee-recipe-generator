@@ -13,8 +13,7 @@ REQUIRED_SECTIONS = [
     "Flavor Profile",
     "Brew Timeline",
     "Brewing Steps",
-    "Troubleshooting Guide",
-    "Adjusting for Your Taste",
+    "Dialing In Your Cup",
 ]
 
 REQUIRED_GRINDERS = [
@@ -148,13 +147,17 @@ def is_recipe_turn(user_text, assistant_text):
     )
     if recipe_shaped_output:
         return True
+    if not EXPLICIT_RECIPE_REQUEST_RE.search(user_text or ""):
+        return False
     if MAINTENANCE_REQUEST_RE.search(user_text or "") or SKILL_ISSUE_REPORT_RE.search(
         user_text or ""
     ):
         return False
     if QUICK_GUIDANCE_RE.search(user_text or ""):
         return False
-    return bool(EXPLICIT_RECIPE_REQUEST_RE.search(user_text or ""))
+    if assistant_text.rstrip().endswith("?"):
+        return False
+    return True
 
 
 def heading_index(markdown, heading):
@@ -325,11 +328,20 @@ def template_errors(markdown):
         if not any(re.search(r"\btime\b", header) for header in timeline_headers):
             errors.append("Brew Timeline must include a markdown table with a Time column.")
 
-    troubleshooting = section_body(markdown, "Troubleshooting Guide")
-    if troubleshooting and not re.search(
-        r"\bIf\s+(?:your|the)\s+coffee\s+tastes\b", troubleshooting, re.IGNORECASE
-    ):
-        errors.append("Troubleshooting Guide must include the standard troubleshooting table.")
+    dialing_in = section_body(markdown, "Dialing In Your Cup")
+    if dialing_in:
+        if not re.search(
+            r"\bI\s+want\s+(?:it|my\s+coffee)\s+to\s+taste\b",
+            dialing_in,
+            re.IGNORECASE,
+        ):
+            errors.append(
+                "Dialing In Your Cup must include the taste-preference table."
+            )
+        if not re.search(r"\bwent\s+wrong\b", dialing_in, re.IGNORECASE):
+            errors.append(
+                "Dialing In Your Cup must include the taste-diagnosis table."
+            )
 
     errors.extend(grinder_table_errors(markdown))
     errors.extend(flavor_intent_errors(markdown))

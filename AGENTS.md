@@ -13,6 +13,8 @@ This repository is a small, documentation-first skill package. The root contains
 
 Keep new content close to the skill it supports. For example, add brewing research under `coffee-recipe-generator/references/` and reusable output formats under `coffee-recipe-generator/templates/`.
 
+The two installers are intentionally different: the npm CLI (`bin/`) copies the skill so end-user installs survive package upgrades and uninstalls, while `scripts/install-skill.sh` symlinks the skill so a development clone stays live. The npm CLI `status` command reports drift (changed, missing, or extra files) for either install type.
+
 ## Build, Test, and Development Commands
 
 There is no build pipeline. The useful local and npm packaging commands are:

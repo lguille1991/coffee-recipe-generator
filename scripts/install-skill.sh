@@ -18,10 +18,14 @@ Options:
   --target claude     Install to ~/.claude/skills only
   --target all        Install to both standard locations (default)
   --path DIR          Install to a custom skills root directory
-  --force             Replace an existing symlink that points elsewhere
+  --force             Replace an existing symlink that points elsewhere, or
+                      back up an existing real directory/file and replace it
+                      with a symlink to this repository
   -h, --help          Show this help
 
-The installer refuses to overwrite a real directory or file.
+Without --force, the installer refuses to overwrite a real directory or file.
+With --force, real directories or files are moved to a timestamped backup
+next to the install path, never deleted.
 USAGE
 }
 
@@ -113,9 +117,18 @@ install_into_root() {
   fi
 
   if [ -e "$link_path" ]; then
-    echo "$label: $link_path already exists and is not a symlink." >&2
-    echo "Move or remove it manually before installing." >&2
-    exit 1
+    if [ "$FORCE" -ne 1 ]; then
+      echo "$label: $link_path already exists and is not a symlink." >&2
+      echo "Run with --force to back it up and replace it with a symlink to this repository." >&2
+      exit 1
+    fi
+
+    local backup_path="${link_path}.bak.$(date +%Y%m%d-%H%M%S)"
+    mv "$link_path" "$backup_path"
+    echo "$label: backed up existing install -> $backup_path"
+    ln -s "$SKILL_SOURCE" "$link_path"
+    echo "$label: linked -> $SKILL_SOURCE"
+    return 0
   fi
 
   ln -s "$SKILL_SOURCE" "$link_path"

@@ -1,14 +1,29 @@
-# Troubleshooting Guide
+# Dialing In Guide
 
-## General Taste Diagnosis
+Source material for the "Dialing In Your Cup" section in generated recipes. Adjustments split into two modes: proactive preference tuning (what the user wants) and reactive diagnosis (what went wrong). Always advise changing one variable at a time.
 
-| If your coffee tastes... | The problem is likely... | Try adjusting... |
-|--------------------------|--------------------------|------------------|
-| Too sour/under-extracted | Under-extraction or underdeveloped | Grind 1-2 clicks finer, raise temp 1-2°C, pour slower |
-| Too bitter/over-extracted | Over-extraction | Grind 1-2 clicks coarser, lower temp 1-2°C, pour faster |
-| Weak/watery | Low extraction yield | Grind finer, use more coffee, or slower first pour |
+## Taste Preferences
+
+| I want it to taste... | Try this |
+|-----------------------|----------|
+| Brighter, more acidity | Lower temp to 90-92°C, coarser grind, or shorter brew time |
+| Sweeter, milder | Raise temp to 93-96°C, medium grind, or longer brew time |
+| More fruit intensity | Use 91-92°C with a longer bloom |
+| Heavier body | Coarser grind (immersion methods) or slower final drawdown |
+| Cleaner cup | Paper filter, slower pours, or switch to V60/Chemex |
+
+## Taste Diagnosis
+
+| Something went wrong... | Likely cause | Fix |
+|-------------------------|--------------|-----|
+| Too sour | Under-extraction or underdeveloped | Grind 1-2 clicks finer, raise temp 1-2°C, pour slower |
+| Too bitter | Over-extraction | Grind 1-2 clicks coarser, lower temp 1-2°C, pour faster |
+| Weak/watery | Low extraction yield | Grind finer, use more coffee, or slow the first pour |
 | Too strong | Over-concentrated | Grind coarser, use less coffee, or add water post-brew |
-| Muddy/cloudy | Too many fines or over-agitation | Use slower pours, let bed settle more, or filter |
+| Muddy/cloudy | Too many fines or over-agitation | Pour 3-5cm higher, let bed settle between pours |
+| Lacking fruit notes | Temp too low or coffee too old | Raise temp to 94°C, use fresher beans |
+| Bitter AND sour at once | Uneven extraction (channeling) | Even out pour pattern, grind finer |
+| "Wine-like" too intense | Natural process character or over-fermentation | Use lower temp (90-91°C), or reduce contact time |
 
 ## Processing-Specific Issues
 
@@ -25,13 +40,6 @@
 **For Honey Coffees:**
 - If tastes "sticky" or "syrupy" excessively = try slightly higher temp
 - If tastes unbalanced (sweet but hollow) = may need finer grind for more extraction
-
-## Adjusting for Your Taste
-
-- **Prefer brighter/acidic coffee:** Try lower temp (90-92°C), coarser grind, or shorter brew time
-- **Prefer sweeter/milder coffee:** Try higher temp (93-96°C), medium grind, or longer brew time
-- **Prefer stronger body:** Try coarser grind (for immersion methods) or slower final drawdown
-- **Prefer cleaner cup:** Use paper filter, slower pours, or switch to V60/Chemex
 
 ## Common Mistakes by Brew Method
 

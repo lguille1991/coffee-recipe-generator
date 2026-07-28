@@ -21,7 +21,7 @@ Use this as the scaffold for every generated recipe. Fill in all placeholders wi
 - `{{TIMELINE_ROWS}}` — Pipe-delimited markdown table rows; every bloom/pour row must have a numeric pour speed in `g/s`
 - `{{STEPS}}` — Numbered step blocks; every bloom/pour step must repeat its numeric pour speed in `g/s`
 - `{{FLAVOR_NOTES}}` — 2-3 sentence flavor description
-- `{{TROUBLESHOOTING_ROWS}}` — Pipe-delimited table rows
+- `{{DIALING_IN_ROWS}}` — Pipe-delimited rows for both Dialing In tables (preferences and diagnosis)
 
 ## Example Filled Recipe
 
@@ -96,26 +96,25 @@ A fruit-forward cup with intense blueberry and stone fruit notes, tuned for clar
 - **Time:** Target 2:45 - 3:15 total
 - **Expected:** All water should pass through by 3:15-3:30
 
-## Troubleshooting Guide
+## Dialing In Your Cup
 
-| If your coffee tastes... | The problem is likely... | Try adjusting... |
-|--------------------------|--------------------------|------------------|
-| Too sour/under-extracted | Under-extraction | Grind 1-2 clicks finer, raise temp 1-2°C, pour slower |
-| Too bitter/over-extracted | Over-extraction | Grind 1-2 clicks coarser, lower temp 1-2°C, pour faster |
-| Weak/watery | Low extraction yield | Grind finer, use 1-2g more coffee, or slow down first pour |
-| Too strong | Over-concentrated | Grind 1-2 clicks coarser, use 1-2g less coffee |
-| Muddy/cloudy | Too many fines or over-agitation | Pour 3-5cm higher, let bed settle more between pours |
-| Lacking fruit notes | Temp too low or coffee too old | Raise temp to 94°C, use fresher beans |
-| Harsh/bitter + sour | Uneven extraction (channeling) | Ensure even pour pattern, grind finer |
-| "Wine-like" too intense | Natural process character or over-fermentation | Use lower temp (90-91°C), or reduce contact time |
+Start here if your brew isn't quite right, or if you just want to push the flavor in a new direction. Change one variable at a time.
 
-## Adjusting for Your Taste
+| I want it to taste... | Try this |
+|-----------------------|----------|
+| Brighter, more acidity | Lower temp to 90-91°C, or grind coarser, or stop brew 15s earlier |
+| Sweeter, milder | Raise temp to 94-95°C, grind medium, or add 10s to brew time |
+| More fruit intensity | Use 91-92°C with a longer bloom |
+| Heavier body | Grind coarser, or slow down the final drawdown |
+| Cleaner cup | Rinse filter twice, pour slower, or use a thicker filter |
 
-- **Brighter/acidic:** Lower temp to 90-91°C, grind coarser, or stop brew 15s earlier
-- **Sweeter/milder:** Raise temp to 94-95°C, grind medium, or add 10s to brew time
-- **More fruit intensity:** Use slightly lower temp (91-92°C) with longer bloom
-- **Heavier body:** Use coarser grind, or try French Press method instead
-- **Cleaner cup:** Rinse filter twice, pour slower, or use Chemex filter
+| Something went wrong... | Likely cause | Fix |
+|-------------------------|--------------|-----|
+| Too sour | Under-extraction | Grind 1-2 clicks finer, raise temp 1-2°C, pour slower |
+| Too bitter | Over-extraction | Grind 1-2 clicks coarser, lower temp 1-2°C, pour faster |
+| Weak/watery | Low extraction | Grind finer, use 1-2g more coffee, or slow the first pour |
+| Muddy/cloudy | Fines or over-agitation | Pour 3-5cm higher, let bed settle between pours |
+| Bitter AND sour at once | Uneven extraction | Even out your pour pattern, grind finer |
 ```
 
 ## Rules for Filling the Template
@@ -124,9 +123,9 @@ A fruit-forward cup with intense blueberry and stone fruit notes, tuned for clar
 2. **Temp:** Use `references/origin-processing-guide.md` for origin and roast-level temp adjustments.
 3. **Brew time:** Use `references/brew-method-defaults.md` as the base, then adjust for processing.
 4. **Steps:** Simplify to 3-4 key steps for beginners; add nuance for experts.
-5. **Flavor intent:** The recipe must state one selected intent in the Overview: clarity, balanced, sweetness, body, or forgiveness. Reflect that intent in the Flavor Profile and Adjusting for Your Taste section.
+5. **Flavor intent:** The recipe must state one selected intent in the Overview: clarity, balanced, sweetness, body, or forgiveness. Reflect that intent in the Flavor Profile and Dialing In Your Cup section.
 6. **V60 recipe style:** Every V60 recipe must state the selected style in the Overview: `Classic V60` or `Tetsu Kasuya 4:6 Method`. Do not generate V60 steps until the style has been resolved. For 4:6, use `references/four-six-method.md` for the timeline, scaled pour math, flavor-intent split, drain-timed pacing, and drawdown troubleshooting.
-7. **Troubleshooting:** Include the full table in every recipe.
+7. **Dialing In:** Include both tables (taste preferences and taste diagnosis) in every recipe.
 8. **Grinder callout:** **MANDATORY.** Always include a markdown table with exact settings for all five grinders in `references/grinder-settings.md`: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, and Timemore C2. Reference `references/grinder-settings.md` for base ranges, then apply the five-determinant adjustments. Never use generic descriptions alone.
 9. **Preflight check:** Before finalizing a recipe, confirm the grinder table has exactly five rows and none of the five grinder names are missing. If a method is unsupported by a grinder, keep the row and write `Not supported` plus the closest practical alternative when available.
 10. **Pour speed:** Every bloom and pour must include a numeric speed as a single value or range in grams per second (`g/s`) in both its Brew Timeline row and Brewing Step. A qualitative label may follow the numeric rate, but cannot replace it. Use `—` only for non-pouring actions such as drawdown.

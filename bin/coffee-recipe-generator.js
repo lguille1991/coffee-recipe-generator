@@ -13,7 +13,7 @@ function usage() {
 
 Commands:
   install             Install the coffee-recipe-generator skill
-  status              Report install status for standard skill locations
+  status              Report install status and drift for standard skill locations
   version             Print the package version
   help                Show this help
 
@@ -24,6 +24,9 @@ Install options:
   --path DIR          Install to a custom skills root directory
   --force             Replace an existing installed skill
   -h, --help          Show this help
+
+Status accepts --target and --path (but not --force) to check a single
+location, and reports whether the install matches the packaged skill.
 
 The installer copies the packaged skill directory. It refuses to overwrite an
 existing file, directory, or symlink unless --force is provided.`);
@@ -141,6 +144,60 @@ function install(args) {
   console.log(`Installed ${SKILL_NAME}. Run npm update and reinstall with --force to update copied installs.`);
 }
 
+function listFiles(root) {
+  const entries = [];
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (entry.isFile()) {
+        entries.push(path.relative(root, full));
+      }
+    }
+  };
+  walk(root);
+  return entries.sort();
+}
+
+function compareSkillDirs(targetPath) {
+  const sourceFiles = listFiles(SKILL_SOURCE);
+  const targetFiles = listFiles(targetPath);
+  const sourceSet = new Set(sourceFiles);
+  const targetSet = new Set(targetFiles);
+
+  const missing = sourceFiles.filter((file) => !targetSet.has(file));
+  const extra = targetFiles.filter((file) => !sourceSet.has(file));
+  const changed = sourceFiles.filter((file) => {
+    if (!targetSet.has(file)) {
+      return false;
+    }
+    const sourceContent = fs.readFileSync(path.join(SKILL_SOURCE, file));
+    const targetContent = fs.readFileSync(path.join(targetPath, file));
+    return !sourceContent.equals(targetContent);
+  });
+
+  return { missing, extra, changed };
+}
+
+function driftSuffix(targetPath) {
+  const { missing, extra, changed } = compareSkillDirs(targetPath);
+  if (missing.length === 0 && extra.length === 0 && changed.length === 0) {
+    return `in sync with package v${PACKAGE_JSON.version}`;
+  }
+  const parts = [];
+  if (changed.length > 0) {
+    parts.push(`${changed.length} changed`);
+  }
+  if (missing.length > 0) {
+    parts.push(`${missing.length} missing`);
+  }
+  if (extra.length > 0) {
+    parts.push(`${extra.length} extra`);
+  }
+  return `drifted from package v${PACKAGE_JSON.version} (${parts.join(", ")}); run \`install --force\` to update`;
+}
+
 function statusForRoot(root, label) {
   const targetPath = path.join(root, SKILL_NAME);
   const stat = fs.lstatSync(targetPath, { throwIfNoEntry: false });
@@ -151,19 +208,43 @@ function statusForRoot(root, label) {
   }
 
   if (stat.isSymbolicLink()) {
-    console.log(`${label}: symlink -> ${fs.readlinkSync(targetPath)}`);
+    const linkTarget = fs.readlinkSync(targetPath);
+    const resolved = path.resolve(path.dirname(targetPath), linkTarget);
+    if (!fs.existsSync(resolved)) {
+      console.log(`${label}: dangling symlink -> ${linkTarget}`);
+      return;
+    }
+    const resolvedStat = fs.statSync(resolved, { throwIfNoEntry: false });
+    if (resolvedStat?.isDirectory()) {
+      console.log(`${label}: symlink -> ${linkTarget} (${driftSuffix(resolved)})`);
+      return;
+    }
+    console.log(`${label}: symlink -> ${linkTarget}`);
     return;
   }
 
   if (stat.isDirectory()) {
-    console.log(`${label}: installed directory -> ${targetPath}`);
+    console.log(`${label}: installed directory -> ${targetPath} (${driftSuffix(targetPath)})`);
     return;
   }
 
   console.log(`${label}: existing file -> ${targetPath}`);
 }
 
-function status() {
+function status(args) {
+  const options = parseOptions(args);
+  if (options.customRoot) {
+    statusForRoot(options.customRoot, "Custom");
+    return;
+  }
+  if (options.target === "opencode") {
+    statusForRoot(homePath(".agents", "skills"), "OpenCode");
+    return;
+  }
+  if (options.target === "claude") {
+    statusForRoot(homePath(".claude", "skills"), "Claude");
+    return;
+  }
   statusForRoot(homePath(".agents", "skills"), "OpenCode");
   statusForRoot(homePath(".claude", "skills"), "Claude");
 }
@@ -173,7 +254,7 @@ const [command = "help", ...args] = process.argv.slice(2);
 if (command === "install") {
   install(args);
 } else if (command === "status") {
-  status();
+  status(args);
 } else if (command === "version" || command === "--version" || command === "-v") {
   console.log(PACKAGE_JSON.version);
 } else if (command === "help" || command === "--help" || command === "-h") {
