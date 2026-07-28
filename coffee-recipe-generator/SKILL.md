@@ -2,7 +2,7 @@
 name: coffee-recipe-generator
 description: Storage-optional, harness-agnostic specialty coffee workflow for bag analysis, concise brewer and coffee guidance, recipe generation, recipe adaptation, and primary-source brewing research.
 metadata:
-  version: "1.2.1"
+  version: "2.0.0"
   author: Portable Skill Template
   tags: Coffee, Brewing, Barista, Research, Portable
   recipe_generation_parameters:
@@ -107,11 +107,10 @@ Pitfalls:
    - Flavor Profile
    - Brew Timeline
    - Brewing Steps
-   - Troubleshooting Guide
-   - Adjusting for Your Taste
+   - Dialing In Your Cup
 9. Before returning the recipe, verify the Overview contains a grinder table with exactly these five rows: 1Zpresso K-Ultra, 1Zpresso Q Air, Baratza Encore ESP, Fellow Opus, Timemore C2.
 10. Verify every bloom and pour has a numeric `g/s` pour speed in both the Brew Timeline and Brewing Steps. Non-pouring actions such as drawdown may use `—` in the timeline's Pour Speed column.
-11. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
+11. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Dialing In Your Cup guidance.
 12. Offer pairing context when useful by consulting `references/brew-method-pairings.md` or `references/equipment-profiles.md`.
 13. For V60 with 4:6 recipe style, build the Brew Timeline and Brewing Steps from `references/four-six-method.md`:
     - Scale water proportionally from the user's coffee dose using a 1:15 ratio unless the user requested a different strength.
@@ -165,7 +164,7 @@ Pitfalls:
 5. Rebuild the recipe using `templates/recipe-output.md` and include a clear “Changes from Base” section.
 6. Include the full five-grinder table required by Workflow B, recalculated for the adapted recipe rather than copied blindly from the base recipe.
 7. Verify every bloom and pour has a numeric `g/s` pour speed in both the Brew Timeline and Brewing Steps.
-8. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Adjusting for Your Taste guidance.
+8. Verify the selected flavor intent appears in the Overview and is reflected in the Flavor Profile and Dialing In Your Cup guidance.
 9. Set expectations honestly when a bean cannot reproduce the same style as another.
 10. Save only if a destination is configured or requested; otherwise return the adapted recipe inline.
 
@@ -202,7 +201,7 @@ Pitfalls:
 | `references/origin-processing-guide.md` | B-6 | Origin, variety, and roast temp guidance |
 | `references/brew-method-pairings.md` | B-12, E-2 | Matching coffee profile to brew method |
 | `references/equipment-profiles.md` | B-12, E-2 | Personal brewer design notes and pairings |
-| `references/troubleshooting.md` | B-8 / standalone | Taste diagnosis and fixes |
+| `references/troubleshooting.md` | B-8 / standalone | Taste preference and diagnosis guidance behind the Dialing In Your Cup section |
 | `references/pour-patterns.md` | B-7 | Pour pattern descriptions and speed reference |
 | `references/four-six-method.md` | B-3 / B-13 | Tetsu Kasuya 4:6 Method; filename spells out leading numeral by convention |
 | `references/coffee-research-sources.md` | C-2 | Primary-source domains and HCG workflow |

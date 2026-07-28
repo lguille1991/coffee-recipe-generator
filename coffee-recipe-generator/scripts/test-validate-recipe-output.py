@@ -95,6 +95,38 @@ class RecipeTurnDetectionTests(unittest.TestCase):
             is_recipe_turn("Update the recipe template in SKILL.md.", assistant_text)
         )
 
+    def test_input_gathering_question_is_not_blocked(self):
+        self.assertFalse(
+            is_recipe_turn(
+                "Generate a V60 coffee recipe for this washed Ethiopian coffee.",
+                "How many grams of coffee will you be using for this recipe?",
+            )
+        )
+
+    def test_v60_style_question_is_not_blocked(self):
+        self.assertFalse(
+            is_recipe_turn(
+                "Generate a V60 recipe, 15g, washed Ethiopian, clarity.",
+                "For V60, do you want a classic recipe or Tetsu Kasuya's 4:6 method?",
+            )
+        )
+
+    def test_guidance_with_recipe_offer_is_not_blocked(self):
+        self.assertFalse(
+            is_recipe_turn(
+                "Generate a recipe for this natural Colombian coffee.",
+                "A Kalita Wave would suit it best. Want me to generate a full recipe?",
+            )
+        )
+
+    def test_non_question_non_recipe_reply_is_still_validated(self):
+        self.assertTrue(
+            is_recipe_turn(
+                "Generate a V60 coffee recipe for this washed Ethiopian coffee.",
+                "Here is a quick starting point.",
+            )
+        )
+
 
 class RecipeTemplateValidationTests(unittest.TestCase):
     def test_reference_time_is_accepted_as_timeline_time_column(self):
@@ -105,13 +137,23 @@ class RecipeTemplateValidationTests(unittest.TestCase):
             template_errors(recipe),
         )
 
-    def test_equivalent_troubleshooting_header_is_accepted(self):
+    def test_equivalent_preference_header_is_accepted(self):
         recipe = FILLED_RECIPE.replace(
-            "If your coffee tastes...", "If the coffee tastes..."
+            "I want it to taste...", "I want my coffee to taste..."
         )
 
         self.assertNotIn(
-            "Troubleshooting Guide must include the standard troubleshooting table.",
+            "Dialing In Your Cup must include the taste-preference table.",
+            template_errors(recipe),
+        )
+
+    def test_equivalent_diagnosis_header_is_accepted(self):
+        recipe = FILLED_RECIPE.replace(
+            "Something went wrong...", "If something went wrong..."
+        )
+
+        self.assertNotIn(
+            "Dialing In Your Cup must include the taste-diagnosis table.",
             template_errors(recipe),
         )
 

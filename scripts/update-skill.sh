@@ -36,6 +36,7 @@ check_install() {
 
   if [ -e "$link_path" ]; then
     echo "$label: installed as a real file or directory; it will not auto-update -> $link_path"
+    echo "  To convert it to a live symlink, run: ./scripts/install-skill.sh --force (backs up the copy first)"
     return 0
   fi
 

@@ -55,6 +55,10 @@ you explicitly pass `--force`. Check the standard locations with:
 npx coffee-recipe-generator status
 ```
 
+`status` also compares each installed copy against the packaged skill and
+reports whether it is in sync or has drifted (changed, missing, or extra
+files), so you know when to reinstall with `--force`.
+
 ### Installing from a Clone
 
 For development, clone the repository and run the shell installer:
@@ -85,7 +89,9 @@ To install into a custom skills root, run:
 ./scripts/install-skill.sh --path /path/to/skills
 ```
 
-If a real directory or file already exists at the install path, the installer stops instead of overwriting it. If an existing symlink points somewhere else, pass `--force` to replace that symlink.
+If a real directory or file already exists at the install path (for example a copy left behind by the npm installer), the installer stops instead of overwriting it. Pass `--force` to move that directory or file to a timestamped backup next to the install path and replace it with a symlink. If an existing symlink points somewhere else, `--force` replaces that symlink.
+
+The two installers differ on purpose: the npm CLI copies the skill so installs survive package upgrades and uninstalls, while the shell installer symlinks so a development clone stays live. `npx coffee-recipe-generator status` reports drift for either kind of install.
 
 ## Updating
 
@@ -155,8 +161,7 @@ Recipes should follow `templates/recipe-output.md` and include:
 - Flavor Profile
 - Brew Timeline
 - Brewing Steps
-- Troubleshooting Guide
-- Adjusting for Your Taste
+- Dialing In Your Cup
 
 Every bloom and pour must state a numeric pour speed in grams per second (`g/s`) in both the Brew Timeline and its corresponding Brewing Step.
 
